@@ -24,23 +24,23 @@ public class TodoController {
         return todoRepository.findAll();
     }
 
-    @GetMapping("/todoById")
-    public Todo getAllPlayers(@RequestBody Todo tod) throws Exception {
-        Todo to = todoRepository.findById(tod.id).orElse(null);
+    @GetMapping("/GetTodoById/{id}")
+    public Todo getAllPlayers(@PathVariable Long id) throws Exception {
+        Todo to = todoRepository.findById(id).orElse(null);
         return to;
     }
 
     @PostMapping("/todo")
-    public Todo postTodo(@RequestBody tasktodo tasks) throws Exception {
+    public Todo postTodo(@RequestBody Todo TodoList) throws Exception {
         Todo _todo = new Todo();
-        _todo.name = tasks.Name;
-        _todo.description = tasks.Description;
-        Tasks newTask = new Tasks();
-        newTask.name = tasks.taskName;
-        newTask.description = tasks.taskDescription;
-        newTask = taskRepository.save(newTask);
+        _todo.name = TodoList.name;
+        _todo.description = TodoList.description;
+        List<Tasks> taskList = TodoList.task;
         List<Tasks> Alltasks = new ArrayList<Tasks>();
-        Alltasks.add(newTask);
+        for(Tasks myTask : taskList){
+            myTask = taskRepository.save(myTask);
+            Alltasks.add(myTask);
+        }
         _todo.task = Alltasks;
         _todo = todoRepository.save(_todo);
         return _todo;
@@ -49,13 +49,13 @@ public class TodoController {
     @PutMapping("/todo")
     public Todo PutTodo(@RequestBody taskEdit taskadd){
         Todo to = todoRepository.findById(taskadd.id).orElse(null);
-        List<Tasks> taskList = to.task;
-        Tasks newTask = new Tasks();
-        newTask.name = taskadd.taskName;
-        newTask.description = taskadd.taskDescription;
-        newTask = taskRepository.save(newTask);
-        taskList.add(newTask);
-        to.task = taskList;
+        List<Tasks> MainTaskList = to.task;
+        List<Tasks> taskList = taskadd.task;
+        for(Tasks myTask : taskList){
+            myTask = taskRepository.save(myTask);
+            MainTaskList.add(myTask);
+        }
+        to.task = MainTaskList;
         to = todoRepository.save(to);
         return to;
     }
@@ -78,9 +78,9 @@ public class TodoController {
         to = todoRepository.save(to);
         return to;
     }
-    @DeleteMapping("/Maintodo")
-    public String DelMainTask(@RequestBody  Todo to){
-        todoRepository.deleteById(to.id);
+    @DeleteMapping("/MainTodo/{id}")
+    public String DelMainTask(@PathVariable Long id) throws Exception{
+        todoRepository.deleteById(id);
         return "success";
     }
 }

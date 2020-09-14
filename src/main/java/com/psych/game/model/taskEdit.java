@@ -6,6 +6,7 @@ import lombok.Setter;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.List;
 
 public class taskEdit {
     @Id
@@ -14,11 +15,5 @@ public class taskEdit {
     @Setter
     public Long id;
 
-    @Getter
-    @Setter
-    public String taskName;
-
-    @Getter
-    @Setter
-    public String taskDescription;
+    public List<Tasks> task;
 }
